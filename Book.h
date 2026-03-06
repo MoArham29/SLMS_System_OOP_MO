@@ -2,7 +2,8 @@
 #include <string>
 using namespace std;
 
-/* Bokk Statuses*/ 
+/* Declaring Functions in Book */
+/* Book Statuses*/ 
 
 enum class BookStatus
 {
