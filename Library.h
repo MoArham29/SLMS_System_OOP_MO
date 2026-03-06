@@ -2,13 +2,14 @@
 #include <vector>
 #include <string>
 #include "Book.h"
-#include "User.h"
 #include "Member.h"
 #include "Librarian.h"
 #include "Admin.h"
 
+using namespace std;
+
 /* Declaring the Functions in Library */
-/* This is the main systems class which stores all the books and the actions*/
+/* This is the main systems class which stores all the books and the actions */
 
 class Library
 {
@@ -17,13 +18,15 @@ private:
     int borrowingLimit;
     int loanDays;
     double latePenaltyPerDay;
-    int findBookIndex(const string& bookId) const;
+
+    int findBookIndexById(const string& bookId) const;
 
 public:
     Library();
+
     void seedSampleData();
-    void listBooks(int today);
-    void displayBooksByIndexes(const vector<int>& indices, int today);
+    void listAllBooks(int today);
+    void displayBooksByIndexes(const vector<int>& indexes, int today);
 
     vector<int> searchByTitle(const string& query);
     vector<int> searchByAuthor(const string& query);
@@ -39,5 +42,3 @@ public:
     bool setBorrowingLimit(int limit, const Admin& admin);
     bool setLatePenalty(double penalty, const Admin& admin);
 };
-
-

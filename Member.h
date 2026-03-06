@@ -34,6 +34,11 @@ public:
         return borrowedBookIds.size();
     }
 
+    bool hasBorrowed(const string& bookId) const
+    {
+        return find(borrowedBookIds.begin(), borrowedBookIds.end(), bookId) != borrowedBookIds.end();
+    }
+
     void addBorrowed(const string& bookId)
     {
         borrowedBookIds.push_back(bookId);
