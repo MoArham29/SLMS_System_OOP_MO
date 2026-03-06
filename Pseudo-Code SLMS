@@ -353,3 +353,81 @@ end Function
 
 Set today <- 0
 Create Library "library"
+Load books into library
+
+while true 
+    Display "Select your Role:"
+    Display "1. Member"
+    Display "2. Librarian"
+    Display "3. Admin"
+    Display "0. Exit"
+ 
+    choice <- Read input
+    
+    if choice = 0
+         Stop program
+    endif
+
+    if choice = 1
+        create Member user
+    else if choice = 2
+        create Librarian user 
+    else if choice = 3
+        create Admin user
+    endif
+
+    while user is logged in
+       Display menu options based on user type
+       action <- Read input
+       
+       if action = "List books"
+           Call library.listAllBooks(today)
+
+       else if action = "Search by title"
+           query <- Read input
+           Call library.searchByTitle(query)
+
+       else if action = "Search By Author"
+           query <- Read input 
+           Call library.searchByAuthor(query)
+
+       else if action = "Borrow book" and user.canBorrow() = true
+           bookId <- Read input
+           Call library.borrowBook(bookId, user, today)
+
+       else if action = "Return book" and user.canBorrow() = true
+           bookId <- Read input
+           Call library.returnBook(bookId, user)
+ 
+       else if action = "Reserve book" and user.canBorrow() = true
+           bookId <- Read input
+           Call library.reserveBook(bookId, user, today)
+
+       else if action = "Add book" and user.canManageBooks() = true
+           Read new book details
+           Call library.addBook(newBook, user)
+
+       else if action = "Remove book" and user.canManageBooks() = true
+           bookId <- Read input
+           Call library.removeBook(bookId, user)
+ 
+       else if action = "Overdue Report" and user.canManageBooks() = true
+           Call library.overdueReport(today)
+ 
+       else if action = "Set borrowing limit" and user.canManageRules() = true
+           newLimit <- Read input
+           Call library.setBorrowingLimit(newLimit, user)
+
+       else if action = "Set late penalty" and user.canManageRules() = true
+           newPenalty <- Read input
+           Call library.setLatePenalty(newPenalty, user)
+
+       else if action = "Advance day"
+           today <- today + 1
+
+       else if action = "Logout"
+           user logs out
+       endif
+    end while
+end while
+```
