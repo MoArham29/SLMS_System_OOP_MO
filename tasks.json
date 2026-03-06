@@ -1,0 +1,23 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build slms",
+      "type": "shell",
+      "command": "clang++",
+      "args": [
+        "-std=c++17",
+        "src/main.cpp",
+        "src/Book.cpp",
+        "src/Library.cpp",
+        "-o",
+        "slms"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": ["$gcc"]
+    }
+  ]
+}
