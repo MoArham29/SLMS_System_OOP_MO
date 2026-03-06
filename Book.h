@@ -11,7 +11,7 @@ enum class BookStatus
     Reserved
 };
 
-string statusToString(BookStatus status)
+string statusToString(BookStatus status);
 
 /* This section is for the book in the library and it encapsulates book state and book actions */
 
