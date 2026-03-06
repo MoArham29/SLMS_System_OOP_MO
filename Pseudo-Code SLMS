@@ -1,1 +1,355 @@
+# SLMS Pseudo-code
 
+
+
+## 1) Book Class 
+
+
+
+### 1.1 isAvailable()
+
+```
+Function isAvailable()
+     IF status = Available
+          Return true
+     Else 
+          Return false
+     Endif
+End Function
+
+```
+
+***
+
+### 1.2 borrow(memberID, today, loanDays)
+
+```
+Function borrow(memberID, today, loanDays)
+
+     If status != Available
+          Return false
+     Endif
+
+     status <- Borrowed
+     borrowerId <- memberId
+     dueDay <- today + loanDays
+
+     Return true
+End Function
+```
+
+***
+
+### 1.3 returnBook()
+
+```
+Function returnBook()
+
+    borrowerID <- ""
+    dueDay <- -1
+
+    if reservedById != ""
+         status <- Reserved
+    else 
+         status <- Available
+    endif
+End Function
+```
+
+***
+
+### 1.4 reserve(memberId, today)
+
+```
+Function reserve(memberId, today)
+
+    if status = Borrowed AND borrowerId != memberId
+        status <- reserved 
+        reservedById <- memberId
+        reservationExpiryDate <- today + 3
+        return true
+    endif
+  
+    return false
+end Function
+```
+
+***
+
+### 1.5 isOverdue*today(
+
+```
+Function isOverdue(today)
+
+    if status = Borrowed AND today > dueDay
+         Return true
+    endif 
+
+    Return false
+end Function
+```
+
+***
+
+### 1.6 refreshReservation(today)
+
+```
+Function refreshReservation(today)
+
+    if status = Reserved AND today > reservationExpiryDay
+        reservedById <- ""
+        reservationExpiryDay <- -1
+ 
+        if borrowerId != ""
+             status <- Borrowed
+        else 
+             status <- Available
+        endif
+    endif
+end Function
+```
+
+
+## 2) Member Class 
+
+### 2.1 borrowedCount()
+
+```
+Function borrowedCount()
+    Return size(borrowedBookIds)
+end Function
+```
+***
+
+### 2.2 addBorrowed(bookId)
+```
+Function addBorrowed(bookId)
+    ADD bookId To borrowedBookIds
+end Function
+```
+***
+
+### 2.3 removeBorrowed(bookId)
+```
+Function removeBorrowed(bookId)
+    if bookId exists in borrowedBookIds
+       Remove bookId From borrowedBookIds
+       Return true
+    endif 
+    Return false
+end Function
+```
+
+## 3) Library Class 
+
+### 3.1 searchByTitle(query)
+
+```
+Function searchByTitle(query)
+    
+    Results <- empty list
+
+    for each book In books
+        if book.title contains query 
+            ADD book to Results 
+        endif
+    endfor
+    Return Results
+end Function
+
+```
+***
+
+### 3.2 searchByAuthor(query)
+
+```
+Function searchByAuthor(query)
+    Results <- empty list
+
+    for each book In books
+        if book.author contains query 
+            ADD book to Results 
+        endif
+    endfor
+    Return Results
+end Function
+```
+***
+
+### 3.3 borrowBook(bookId, member, today)
+
+```
+Function borrowBook(bookId, member, today) 
+    
+    if member.borrowedCount() >= borrowing.limit
+         Display "Borrowing Denied: borrowing limit reached."
+         Return false
+    endif
+    book <- Find book in books where book.Id = bookId
+    if book Not found
+        Display "Borrowing Denied: book not found."
+        Return false
+    endif
+    call book.refreshReservation(today)
+    if book.isAvailable() = false
+        display " Borrowing Denied: book not Available."
+        Return false
+    endif
+    success <- book.borrow(memberId, today, loaDays)
+    if success = true
+         call member.addBorrowed(bookId)
+         Display "Borrowing Successful."
+         Return true
+    endif
+    Return false
+end Function
+```
+
+***
+
+### 3.4 returnBook(bookId, member)
+```
+Function returnBook(bookId, member)
+
+    book <- Find book in books where book,Id = bookId
+    if book not Found
+        Display "Return denied: book not found."
+        Return false
+    endif
+
+    if bookId not in member.borrowedBookIds
+         Display "Return denied: Member did not borrow this book."
+         Return false
+    endif
+
+    call book.returnbook()
+    call member.removeBorrowed(bookId)
+
+    Display "Return Successful"
+    Return true
+end Function
+```
+
+***
+
+### 3.5 reserveBook(bookId, member, today)
+```
+Function reserveBook(bookId, member, today)
+
+    book <- Find book in books where book.Id = bookId
+    if book not found
+         Display "Reservation Denied: book not found"
+         Return false
+    endif
+    call book.refreshReservation(today)
+    success <- book.reserve(member.id, today)
+
+    if success = true
+          Display "Reservation successful (expires after 3 days)
+          Return true
+    endif
+
+    Display "Reservation Denied: book must be borrowed by another member"
+    Return false
+
+end Function
+```
+
+***
+
+### 3.6 overdueReport(today)
+```
+Function overdueReport(today)
+   
+    Display "Overdue Books:"
+    for each book in books
+        if book.isOverdue(today)
+            Display book.id, book.title, book.borrowerId, book.DueDay
+        endif
+    endfor
+end Function
+```
+
+***
+
+### 3.7 addBook(book, librarian)
+```
+Function addBook(book, librarian)
+
+    if a book with the same ID already exists in books
+        Display "Add Denied: duplicate book ID"
+        Return false
+    endif
+
+    Add book to books
+    Display "Book added successfully"
+    Return true
+end Function
+```
+
+***
+
+### 3.8 removeBook(bookId, librarian)
+```
+Function removeBook(bookId, librarian)
+
+    book <- Find book in books where book.Id = bookId
+
+    if book not found
+        Display "Remove Denied: book not found"
+        Return false 
+    endif
+
+    if book.status = Borrowed or book.status = Reserved
+        Display "Remove Denied: book not found"
+        Return false
+    endif
+
+    Remove book from books
+    Display "Book removed Successfully"
+    Return true
+
+endFunction
+```
+
+***
+
+### 3.9 setBorrowingLimit(limit, admin)
+```
+Function setBorrowingLimit(limit, admin)
+
+    if limit < 1 or limit > 20
+        Display "Invalid borrowing limit"
+        Return false
+    endif
+
+    borrowingLimit <- limit
+    Display "Borrowing limit updated"
+    Return true
+end Function
+```
+
+***
+
+### 3.10 setLatePenalty(penalty, admin)
+```
+Function setLatePenalty(penalty, admin)
+
+    if penalty < 0
+        Display "Invalid Value"
+        Return false
+    endif
+
+    latePenaltyPerDay <- penalty
+    Display "Late penalty updated"
+    Return true
+
+end Function
+```
+
+## 4) Main Program 
+
+```
+
+Set today <- 0
+Create Library "library"
