@@ -54,4 +54,20 @@ public:
         borrowedBookIds.erase(it);
         return true;
     }
+
+    void displayBorrowedBooks() const
+    {
+        cout << "\nBorrowed books:\n";
+
+        if (borrowedBookIds.empty())
+        {
+            cout << "None\n";
+            return;
+        }
+
+        for (const auto& bookId : borrowedBookIds)
+        {
+            cout << "- " << bookId << "\n";
+        }
+    }
 };
