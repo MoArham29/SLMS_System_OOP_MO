@@ -245,7 +245,7 @@ bool Library::setBorrowingLimit(int limit, const Admin& admin)
 
 bool Library::setLatePenalty(double penalty, const Admin& admin)
 {
-    (void)admin; // Role checked in main menu
+    (void)admin; // Role checked in main menu.
 
     if (penalty < 0)
     {
