@@ -3,6 +3,7 @@
 
 using namespace std;
 
+/* Declaring Functions in User */
 /* an Abstract class for all the users of the system. Abstaraction and polymorphism are used here. */
 
 class User
