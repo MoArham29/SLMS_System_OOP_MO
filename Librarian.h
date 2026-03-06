@@ -1,6 +1,7 @@
 #pragma once 
 #include "User.h"
 
+/* Declaring Functions in Librarian */
 /* This section is for the librarian class */
 
 class Librarian : public User
