@@ -6,6 +6,7 @@
 
 using namespace std;
 
+/* Declaring Functions in Member */
 /* This section is for the library member class */
 
 class Member : public User
