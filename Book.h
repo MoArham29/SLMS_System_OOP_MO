@@ -38,6 +38,7 @@ public:
     string getReservedById() const;
     BookStatus getStatus() const;
     int getDueDay() const;
+    int getReservationStartDay() const;
     int getReservationExpiryDay() const;
 
     bool isAvailable() const;

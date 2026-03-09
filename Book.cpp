@@ -16,7 +16,7 @@ Book::Book()
     : bookId(""), title(""), author(""),
       status(BookStatus::Available),
       borrowerId(""), reservedById(""),
-      dueDay(-1), reservationExpiryDay(-1)
+      dueDay(-1), reservationStartDay(-1), reservationExpiryDay(-1)
 {
 }
 
@@ -24,7 +24,7 @@ Book::Book(const string& id, const string& title, const string& author)
     : bookId(id), title(title), author(author),
       status(BookStatus::Available),
       borrowerId(""), reservedById(""),
-      dueDay(-1), reservationExpiryDay(-1)
+      dueDay(-1), reservationStartDay(-1), reservationExpiryDay(-1)
 {
 }
 
@@ -35,6 +35,7 @@ string Book::getBorrowerId() const { return borrowerId; }
 string Book::getReservedById() const { return reservedById; }
 BookStatus Book::getStatus() const { return status; }
 int Book::getDueDay() const { return dueDay; }
+int Book::getReservationStartDay() const { return reservationStartDay; }
 int Book::getReservationExpiryDay() const { return reservationExpiryDay; }
 
 bool Book::isAvailable() const
@@ -59,18 +60,31 @@ void Book::returnBook()
     dueDay = -1;
 
     if (!reservedById.empty())
+    {
         status = BookStatus::Reserved;
+    }
     else
+    {
         status = BookStatus::Available;
+        reservationStartDay = -1;
+        reservationExpiryDay = -1;
+    }
 }
 
 bool Book::reserve(const string& memberId, int today)
 {
-    if ((status == BookStatus::Borrowed || status == BookStatus::Reserved) && borrowerId != memberId && borrowerId != "")
+    (void)today; // not used anymore because reservation starts from dueDay
+
+    // Allow reservation only if the book is currently borrowed by someone else
+    if (borrowerId != "" && borrowerId != memberId)
     {
         status = BookStatus::Reserved;
         reservedById = memberId;
-        reservationExpiryDay = today + 3;
+
+        // Reservation starts when the current borrowing period ends
+        reservationStartDay = dueDay;
+        reservationExpiryDay = dueDay + 3;
+
         return true;
     }
 
@@ -84,9 +98,13 @@ bool Book::isOverdue(int today) const
 
 void Book::refreshReservation(int today)
 {
-    if (status == BookStatus::Reserved && reservationExpiryDay != -1 && today > reservationExpiryDay)
+    if (status == BookStatus::Reserved &&
+        reservationStartDay != -1 &&
+        reservationExpiryDay != -1 &&
+        today > reservationExpiryDay)
     {
         reservedById = "";
+        reservationStartDay = -1;
         reservationExpiryDay = -1;
 
         if (borrowerId != "")
@@ -118,10 +136,11 @@ string Book::toString(int today)
     }
 
     if (reservedById != "")
-    {
-        ss << " | Reserved By: " << reservedById
-           << " | Reservation Expiry: " << reservationExpiryDay;
-    }
+{
+    ss << " | Reserved By: " << reservedById
+       << " | Reservation Start Day: " << reservationStartDay
+       << " | Reservation Expiry: " << reservationExpiryDay;
+}
 
     return ss.str();
 }
