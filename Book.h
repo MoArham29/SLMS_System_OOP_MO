@@ -25,6 +25,7 @@ private:
     string borrowerId;
     string reservedById;
     int dueDay;
+    int reservationStartDay;
     int reservationExpiryDay;
 
 public:
