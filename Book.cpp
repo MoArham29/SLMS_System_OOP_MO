@@ -54,7 +54,7 @@ bool Book::borrow(const string& memberId, int today, int loanDays)
     return true;
 }
 
-void Book::returnBook()
+void Book::returnBook(int today)
 {
     borrowerId = "";
     dueDay = -1;
@@ -62,6 +62,10 @@ void Book::returnBook()
     if (!reservedById.empty())
     {
         status = BookStatus::Reserved;
+
+        // Reservation should begin from the actual return day
+        reservationStartDay = today;
+        reservationExpiryDay = today + 3;
     }
     else
     {

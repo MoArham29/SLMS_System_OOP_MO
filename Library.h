@@ -32,7 +32,7 @@ public:
     vector<int> searchByAuthor(const string& query);
 
     bool borrowBook(const string& bookId, Member& member, int today);
-    bool returnBook(const string& bookId, Member& member);
+    bool returnBook(const string& bookId, Member& member, int today);
     bool reserveBook(const string& bookId, Member& member, int today);
 
     bool addBook(const Book& book, const Librarian& librarian);

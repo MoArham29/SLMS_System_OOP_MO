@@ -130,7 +130,7 @@ bool Library::borrowBook(const string& bookId, Member& member, int today)
     return false;
 }
 
-bool Library::returnBook(const string& bookId, Member& member)
+bool Library::returnBook(const string& bookId, Member& member, int today)
 {
     int index = findBookIndexById(bookId);
     if (index == -1)
@@ -145,7 +145,7 @@ bool Library::returnBook(const string& bookId, Member& member)
         return false;
     }
 
-    books[index].returnBook();
+    books[index].returnBook(today);
     member.removeBorrowed(bookId);
 
     cout << "Return successful.\n";

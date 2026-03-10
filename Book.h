@@ -43,7 +43,7 @@ public:
 
     bool isAvailable() const;
     bool borrow(const string& memberId, int today, int loanDays);
-    void returnBook();
+    void returnBook(int today);
     bool reserve(const string& memberId, int today);
     bool isOverdue(int today) const;
     void refreshReservation(int today);
