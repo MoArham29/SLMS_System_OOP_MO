@@ -182,7 +182,9 @@ bool Database::deleteBook(const string& bookId)
 bool Database::createDefaultUsers()
 {
     const char* checkSql = "SELECT COUNT(*) FROM users WHERE role = ?;";
-    const char* insertSql = "INSERT INTO users (user_id, name, username, password, role) VALUES (?, ?, ?, ?, ?);";
+    const char* insertSql =
+        "INSERT INTO users (user_id, name, email, username, password, role) "
+        "VALUES (?, ?, ?, ?, ?, ?);";
 
     sqlite3_stmt* checkStmt = nullptr;
     sqlite3_stmt* insertStmt = nullptr;
@@ -274,7 +276,7 @@ bool Database::registerMember(const string& userId, const string& name, const st
 
     const char* sql =
         "INSERT INTO users (user_id, name, email, username, password, role) "
-        "VALUES (?, ?, ?, ?, 'Member');";
+        "VALUES (?, ?, ?, ?, ?, 'Member');";
 
     sqlite3_stmt* stmt = nullptr;
 
