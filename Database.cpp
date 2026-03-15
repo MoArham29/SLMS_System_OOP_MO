@@ -206,9 +206,10 @@ bool Database::createDefaultUsers()
 
         sqlite3_bind_text(insertStmt, 1, "A001", -1, SQLITE_TRANSIENT);
         sqlite3_bind_text(insertStmt, 2, "System Admin", -1, SQLITE_TRANSIENT);
-        sqlite3_bind_text(insertStmt, 3, "admin", -1, SQLITE_TRANSIENT);
-        sqlite3_bind_text(insertStmt, 4, "admin123", -1, SQLITE_TRANSIENT);
-        sqlite3_bind_text(insertStmt, 5, "Admin", -1, SQLITE_TRANSIENT);
+        sqlite3_bind_text(insertStmt, 3, "admin@slms.com", -1, SQLITE_TRANSIENT);
+        sqlite3_bind_text(insertStmt, 4, "admin", -1, SQLITE_TRANSIENT);
+        sqlite3_bind_text(insertStmt, 5, "admin123", -1, SQLITE_TRANSIENT);
+        sqlite3_bind_text(insertStmt, 6, "Admin", -1, SQLITE_TRANSIENT);
 
         sqlite3_step(insertStmt);
         sqlite3_finalize(insertStmt);
@@ -233,9 +234,10 @@ bool Database::createDefaultUsers()
 
         sqlite3_bind_text(insertStmt, 1, "L001", -1, SQLITE_TRANSIENT);
         sqlite3_bind_text(insertStmt, 2, "Main Librarian", -1, SQLITE_TRANSIENT);
-        sqlite3_bind_text(insertStmt, 3, "librarian", -1, SQLITE_TRANSIENT);
-        sqlite3_bind_text(insertStmt, 4, "lib123", -1, SQLITE_TRANSIENT);
-        sqlite3_bind_text(insertStmt, 5, "Librarian", -1, SQLITE_TRANSIENT);
+        sqlite3_bind_text(insertStmt, 3, "librarian@slms.com", -1, SQLITE_TRANSIENT);
+        sqlite3_bind_text(insertStmt, 4, "librarian", -1, SQLITE_TRANSIENT);
+        sqlite3_bind_text(insertStmt, 5, "lib123", -1, SQLITE_TRANSIENT);
+        sqlite3_bind_text(insertStmt, 6, "Librarian", -1, SQLITE_TRANSIENT);
 
         sqlite3_step(insertStmt);
         sqlite3_finalize(insertStmt);
