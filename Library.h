@@ -32,6 +32,7 @@ public:
 
     vector<int> searchByTitle(const string& query);
     vector<int> searchByAuthor(const string& query);
+    vector<string> getBorrowedBooksForMember(const string& memberId);
 
     bool borrowBook(const string& bookId, Member& member, int today);
     bool returnBook(const string& bookId, Member& member, int today);

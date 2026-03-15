@@ -121,6 +121,21 @@ vector<int> Library::searchByAuthor(const string& query)
     return results;
 }
 
+vector<string> Library::getBorrowedBooksForMember(const string& memberId)
+{
+    vector<string> borrowed;
+
+    for (const auto& book : books)
+    {
+        if (book.getBorrowerId() == memberId)
+        {
+            borrowed.push_back(book.getBookId());
+        }
+    }
+
+    return borrowed;
+}
+
 bool Library::borrowBook(const string& bookId, Member& member, int today)
 {
     if (member.borrowedCount() >= borrowingLimit)
@@ -203,16 +218,17 @@ bool Library::reserveBook(const string& bookId, Member& member, int today)
 
 bool Library::addBook(const Book& book, const Librarian& librarian)
 {
-    (void)librarian; // Role checked in main menu
+    (void)librarian;
 
     if (findBookIndexById(book.getBookId()) != -1)
     {
-        database.insertBook(book);
         cout << "Add denied: duplicate book ID.\n";
         return false;
     }
 
     books.push_back(book);
+    database.insertBook(book);
+
     cout << "Book added successfully.\n";
     return true;
 }

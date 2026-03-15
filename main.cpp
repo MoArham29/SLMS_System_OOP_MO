@@ -44,8 +44,6 @@ string readLine(const string& prompt)
 int main()
 {
     Library library;
-    library.seedSampleData();
-
     int today = 0;
 
     while (true)
@@ -129,7 +127,20 @@ int main()
                 }
                 else if (action == 7)
                 {
-                    member.displayBorrowedBooks();
+                    vector<string> borrowed = library.getBorrowedBooksForMember(member.getId());
+
+                    cout << "\nBorrowed books:\n";
+                    if (borrowed.empty())
+                    {
+                        cout << "None\n";
+                    }
+                    else
+                    {
+                        for (const auto& bookId : borrowed)
+                        {
+                           cout << "- " << bookId << "\n";
+                        }
+                    }
                 }
                 else if (action == 8)
                 {
