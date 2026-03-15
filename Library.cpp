@@ -21,6 +21,7 @@ Library::Library()
 
     database.open("slms.db");
     database.createTables();
+    database.createDefaultUsers();
 
     books = database.loadBooks();
 
@@ -302,4 +303,13 @@ bool Library::setLatePenalty(double penalty, const Admin& admin)
     latePenaltyPerDay = penalty;
     cout << "Late penalty updated to " << latePenaltyPerDay << ".\n";
     return true;
+}
+bool Library::registerMember(const string& userId, const string& name, const string& username, const string& password)
+{
+    return database.registerMember(userId, name, username, password);
+}
+
+bool Library::loginUser(const string& username, const string& password, string& role, string& userId, string& name)
+{
+    return database.loginUser(username, password, role, userId, name);
 }

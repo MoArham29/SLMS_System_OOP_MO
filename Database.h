@@ -27,4 +27,9 @@ public:
     bool deleteBook(const string& bookId);
 
     vector<Book> loadBooks();
+
+    bool createDefaultUsers();
+    bool usernameExists(const string& username);
+    bool registerMember(const string& userId, const string& name, const string& username, const string& password);
+    bool loginUser(const string& username, const string& password, string& role, string& userId, string& name);
 };

@@ -29,7 +29,7 @@ void Database::close()
 
 bool Database::createTables()
 {
-    const char* sql =
+    const char* booksSql =
         "CREATE TABLE IF NOT EXISTS books ("
         "book_id TEXT PRIMARY KEY,"
         "title TEXT NOT NULL,"
@@ -42,11 +42,27 @@ bool Database::createTables()
         "reservation_expiry_day INTEGER"
         ");";
 
+    const char* usersSql =
+        "CREATE TABLE IF NOT EXISTS users ("
+        "user_id TEXT PRIMARY KEY,"
+        "name TEXT NOT NULL,"
+        "username TEXT UNIQUE NOT NULL,"
+        "password TEXT NOT NULL,"
+        "role TEXT NOT NULL"
+        ");";
+
     char* errMsg = nullptr;
 
-    if (sqlite3_exec(db, sql, nullptr, nullptr, &errMsg) != SQLITE_OK)
+    if (sqlite3_exec(db, booksSql, nullptr, nullptr, &errMsg) != SQLITE_OK)
     {
         cerr << "Failed to create books table: " << errMsg << endl;
+        sqlite3_free(errMsg);
+        return false;
+    }
+
+    if (sqlite3_exec(db, usersSql, nullptr, nullptr, &errMsg) != SQLITE_OK)
+    {
+        cerr << "Failed to create users table: " << errMsg << endl;
         sqlite3_free(errMsg);
         return false;
     }
