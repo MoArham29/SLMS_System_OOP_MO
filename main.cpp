@@ -120,7 +120,7 @@ int main()
                 else if (action == 5)
                 {
                     string bookId = readLine("Enter Book ID to return: ");
-                    library.returnBook(bookId, member);
+                    library.returnBook(bookId, member, today);
                 }
                 else if (action == 6)
                 {

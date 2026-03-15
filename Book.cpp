@@ -12,6 +12,14 @@ string statusToString(BookStatus status)
     }
 }
 
+BookStatus stringToStatus(const string& status)
+{
+    if (status == "Available") return BookStatus::Available;
+    if (status == "Borrowed") return BookStatus::Borrowed;
+    if (status == "Reserved") return BookStatus::Reserved;
+    return BookStatus::Available;
+}
+
 Book::Book()
     : bookId(""), title(""), author(""),
       status(BookStatus::Available),
@@ -25,6 +33,24 @@ Book::Book(const string& id, const string& title, const string& author)
       status(BookStatus::Available),
       borrowerId(""), reservedById(""),
       dueDay(-1), reservationStartDay(-1), reservationExpiryDay(-1)
+{
+}
+Book::Book(const string& id,
+           const string& title,
+           const string& author,
+           BookStatus status,
+           const string& borrowerId,
+           const string& reservedById,
+           int dueDay,
+           int reservationStartDay,
+           int reservationExpiryDay)
+    : bookId(id), title(title), author(author),
+      status(status),
+      borrowerId(borrowerId),
+      reservedById(reservedById),
+      dueDay(dueDay),
+      reservationStartDay(reservationStartDay),
+      reservationExpiryDay(reservationExpiryDay)
 {
 }
 

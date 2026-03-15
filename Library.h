@@ -5,6 +5,7 @@
 #include "Member.h"
 #include "Librarian.h"
 #include "Admin.h"
+#include "Database.h"
 
 using namespace std;
 
@@ -18,6 +19,7 @@ private:
     int borrowingLimit;
     int loanDays;
     double latePenaltyPerDay;
+    Database database;
 
     int findBookIndexById(const string& bookId) const;
 

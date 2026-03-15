@@ -18,6 +18,16 @@ Library::Library()
     borrowingLimit = 5;
     loanDays = 14;
     latePenaltyPerDay = 0.50;
+
+    database.open("slms.db");
+    database.createTables();
+
+    books = database.loadBooks();
+
+    if (books.empty())
+    {
+        seedSampleData();
+    }
 }
 
 int Library::findBookIndexById(const string& bookId) const
@@ -32,11 +42,25 @@ int Library::findBookIndexById(const string& bookId) const
 
 void Library::seedSampleData()
 {
-    books.emplace_back("B001", "Clean Code", "Robert C. Martin");
-    books.emplace_back("B002", "The Pragmatic Programmer", "Andrew Hunt");
-    books.emplace_back("B003", "Design Patterns", "Erich Gamma");
-    books.emplace_back("B004", "C++ Primer", "Stanley Lippman");
-    books.emplace_back("B005", "Introduction to Algorithms", "Thomas Cormen");
+    books.clear();
+
+    Book b1("B001", "Clean Code", "Robert C. Martin");
+    Book b2("B002", "The Pragmatic Programmer", "Andrew Hunt");
+    Book b3("B003", "Design Patterns", "Erich Gamma");
+    Book b4("B004", "C++ Primer", "Stanley Lippman");
+    Book b5("B005", "Introduction to Algorithms", "Thomas Cormen");
+
+    books.push_back(b1);
+    books.push_back(b2);
+    books.push_back(b3);
+    books.push_back(b4);
+    books.push_back(b5);
+
+    database.insertBook(b1);
+    database.insertBook(b2);
+    database.insertBook(b3);
+    database.insertBook(b4);
+    database.insertBook(b5);
 }
 
 void Library::listAllBooks(int today)
@@ -123,6 +147,7 @@ bool Library::borrowBook(const string& bookId, Member& member, int today)
     if (books[index].borrow(member.getId(), today, loanDays))
     {
         member.addBorrowed(bookId);
+        database.updateBook(books[index]);
         cout << "Borrow successful.\n";
         return true;
     }
@@ -148,6 +173,8 @@ bool Library::returnBook(const string& bookId, Member& member, int today)
     books[index].returnBook(today);
     member.removeBorrowed(bookId);
 
+    database.updateBook(books[index]);
+
     cout << "Return successful.\n";
     return true;
 }
@@ -165,6 +192,7 @@ bool Library::reserveBook(const string& bookId, Member& member, int today)
 
     if (books[index].reserve(member.getId(), today))
     {
+        database.updateBook(books[index]);
         cout << "Reservation successful.\n";
         return true;
     }
@@ -179,6 +207,7 @@ bool Library::addBook(const Book& book, const Librarian& librarian)
 
     if (findBookIndexById(book.getBookId()) != -1)
     {
+        database.insertBook(book);
         cout << "Add denied: duplicate book ID.\n";
         return false;
     }
@@ -205,6 +234,7 @@ bool Library::removeBook(const string& bookId, const Librarian& librarian)
         return false;
     }
 
+    database.deleteBook(bookId);
     books.erase(books.begin() + index);
     cout << "Book removed successfully.\n";
     return true;

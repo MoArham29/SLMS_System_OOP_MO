@@ -12,6 +12,8 @@ enum class BookStatus
 };
 
 string statusToString(BookStatus status);
+BookStatus stringToStatus(const string& status);
+
 
 /* This section is for the book in the library and it encapsulates book state and book actions */
 
@@ -21,9 +23,11 @@ private:
     string bookId;
     string title;
     string author;
+
     BookStatus status;
     string borrowerId;
     string reservedById;
+
     int dueDay;
     int reservationStartDay;
     int reservationExpiryDay;
@@ -31,6 +35,17 @@ private:
 public:
     Book();
     Book(const string& id, const string& title, const string& author);
+
+    Book(const string& id,
+         const string& title,
+         const string& author,
+         BookStatus status,
+         const string& borrowerId,
+         const string& reservedById,
+         int dueDay,
+         int reservationStartDay,
+         int reservationExpiryDay);
+
     string getBookId() const;
     string getTitle() const;
     string getAuthor() const;
