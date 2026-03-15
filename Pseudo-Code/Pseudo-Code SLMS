@@ -431,3 +431,648 @@ while true
     end while
 end while
 ```
+<h1>SLMS Pseudo-code (Updated Version)</h1>
+
+<h2>1) Book Class</h2>
+
+<h3>1.1 isAvailable()</h3>
+<pre>
+Function isAvailable()
+    If status = Available
+        Return true
+    Else
+        Return false
+    Endif
+End Function
+</pre>
+
+<hr>
+
+<h3>1.2 borrow(memberId, today, loanDays)</h3>
+<pre>
+Function borrow(memberId, today, loanDays)
+
+    If status != Available
+        Return false
+    Endif
+
+    status &lt;- Borrowed
+    borrowerId &lt;- memberId
+    dueDay &lt;- today + loanDays
+
+    Return true
+End Function
+</pre>
+
+<hr>
+
+<h3>1.3 returnBook(today)</h3>
+<pre>
+Function returnBook(today)
+
+    borrowerId &lt;- ""
+    dueDay &lt;- -1
+
+    If reservedById != ""
+        status &lt;- Reserved
+        reservationStartDay &lt;- today
+        reservationExpiryDay &lt;- today + 3
+    Else
+        status &lt;- Available
+        reservationStartDay &lt;- -1
+        reservationExpiryDay &lt;- -1
+    Endif
+End Function
+</pre>
+
+<hr>
+
+<h3>1.4 reserve(memberId, today)</h3>
+<pre>
+Function reserve(memberId, today)
+
+    If borrowerId != "" AND borrowerId != memberId
+        status &lt;- Reserved
+        reservedById &lt;- memberId
+        reservationStartDay &lt;- dueDay
+        reservationExpiryDay &lt;- dueDay + 3
+        Return true
+    Endif
+
+    Return false
+End Function
+</pre>
+
+<hr>
+
+<h3>1.5 isOverdue(today)</h3>
+<pre>
+Function isOverdue(today)
+
+    If borrowerId != "" AND dueDay != -1 AND today &gt; dueDay
+        Return true
+    Endif
+
+    Return false
+End Function
+</pre>
+
+<hr>
+
+<h3>1.6 refreshReservation(today)</h3>
+<pre>
+Function refreshReservation(today)
+
+    If status = Reserved AND
+       reservationStartDay != -1 AND
+       reservationExpiryDay != -1 AND
+       today &gt; reservationExpiryDay
+
+        reservedById &lt;- ""
+        reservationStartDay &lt;- -1
+        reservationExpiryDay &lt;- -1
+
+        If borrowerId != ""
+            status &lt;- Borrowed
+        Else
+            status &lt;- Available
+        Endif
+    Endif
+End Function
+</pre>
+
+<hr>
+
+<h2>2) Member Class</h2>
+
+<h3>2.1 borrowedCount()</h3>
+<pre>
+Function borrowedCount()
+    Return size(borrowedBookIds)
+End Function
+</pre>
+
+<hr>
+
+<h3>2.2 addBorrowed(bookId)</h3>
+<pre>
+Function addBorrowed(bookId)
+    Add bookId to borrowedBookIds
+End Function
+</pre>
+
+<hr>
+
+<h3>2.3 removeBorrowed(bookId)</h3>
+<pre>
+Function removeBorrowed(bookId)
+
+    If bookId exists in borrowedBookIds
+        Remove bookId from borrowedBookIds
+        Return true
+    Endif
+
+    Return false
+End Function
+</pre>
+
+<hr>
+
+<h3>2.4 hasBorrowed(bookId)</h3>
+<pre>
+Function hasBorrowed(bookId)
+
+    If bookId exists in borrowedBookIds
+        Return true
+    Endif
+
+    Return false
+End Function
+</pre>
+
+<hr>
+
+<h2>3) Database Class</h2>
+
+<h3>3.1 createTables()</h3>
+<pre>
+Function createTables()
+
+    Create books table if it does not exist
+    Create users table if it does not exist
+
+    Return true if successful
+End Function
+</pre>
+
+<hr>
+
+<h3>3.2 createDefaultUsers()</h3>
+<pre>
+Function createDefaultUsers()
+
+    If no Admin exists in users table
+        Insert default Admin account
+    Endif
+
+    If no Librarian exists in users table
+        Insert default Librarian account
+    Endif
+
+    Return true
+End Function
+</pre>
+
+<hr>
+
+<h3>3.3 registerMember(userId, name, email, username, password)</h3>
+<pre>
+Function registerMember(userId, name, email, username, password)
+
+    If username already exists
+        Return false
+    Endif
+
+    Insert new Member into users table
+    Return true
+End Function
+</pre>
+
+<hr>
+
+<h3>3.4 loginUser(username, password)</h3>
+<pre>
+Function loginUser(username, password)
+
+    Search users table for matching username and password
+
+    If match found
+        Return role, userId, name
+    Else
+        Return login failed
+    Endif
+End Function
+</pre>
+
+<hr>
+
+<h3>3.5 insertBook(book)</h3>
+<pre>
+Function insertBook(book)
+    Insert book into books table
+End Function
+</pre>
+
+<hr>
+
+<h3>3.6 updateBook(book)</h3>
+<pre>
+Function updateBook(book)
+    Update matching book record in books table
+End Function
+</pre>
+
+<hr>
+
+<h3>3.7 deleteBook(bookId)</h3>
+<pre>
+Function deleteBook(bookId)
+    Delete matching book record from books table
+End Function
+</pre>
+
+<hr>
+
+<h3>3.8 loadBooks()</h3>
+<pre>
+Function loadBooks()
+    Read all book records from books table
+    Reconstruct Book objects
+    Return list of books
+End Function
+</pre>
+
+<hr>
+
+<h2>4) Library Class</h2>
+
+<h3>4.1 searchByTitle(query)</h3>
+<pre>
+Function searchByTitle(query)
+
+    Results &lt;- empty list
+
+    For each book in books
+        If book.title contains query
+            Add book to Results
+        Endif
+    Endfor
+
+    Return Results
+End Function
+</pre>
+
+<hr>
+
+<h3>4.2 searchByAuthor(query)</h3>
+<pre>
+Function searchByAuthor(query)
+
+    Results &lt;- empty list
+
+    For each book in books
+        If book.author contains query
+            Add book to Results
+        Endif
+    Endfor
+
+    Return Results
+End Function
+</pre>
+
+<hr>
+
+<h3>4.3 borrowBook(bookId, member, today)</h3>
+<pre>
+Function borrowBook(bookId, member, today)
+
+    If member.borrowedCount() &gt;= borrowingLimit
+        Display "Borrow denied: borrowing limit reached."
+        Return false
+    Endif
+
+    book &lt;- Find book in books where book.id = bookId
+
+    If book not found
+        Display "Borrow denied: book not found."
+        Return false
+    Endif
+
+    Call book.refreshReservation(today)
+
+    If book.isAvailable() = false
+        Display "Borrow denied: book not available."
+        Return false
+    Endif
+
+    success &lt;- book.borrow(member.id, today, loanDays)
+
+    If success = true
+        Call member.addBorrowed(bookId)
+        Update book in database
+        Display "Borrow successful."
+        Return true
+    Endif
+
+    Return false
+End Function
+</pre>
+
+<hr>
+
+<h3>4.4 returnBook(bookId, member, today)</h3>
+<pre>
+Function returnBook(bookId, member, today)
+
+    book &lt;- Find book in books where book.id = bookId
+
+    If book not found
+        Display "Return denied: book not found."
+        Return false
+    Endif
+
+    If member.hasBorrowed(bookId) = false
+        Display "Return denied: member did not borrow this book."
+        Return false
+    Endif
+
+    Call book.returnBook(today)
+    Call member.removeBorrowed(bookId)
+
+    Update book in database
+
+    Display "Return successful."
+    Return true
+End Function
+</pre>
+
+<hr>
+
+<h3>4.5 reserveBook(bookId, member, today)</h3>
+<pre>
+Function reserveBook(bookId, member, today)
+
+    book &lt;- Find book in books where book.id = bookId
+
+    If book not found
+        Display "Reservation denied: book not found."
+        Return false
+    Endif
+
+    Call book.refreshReservation(today)
+
+    success &lt;- book.reserve(member.id, today)
+
+    If success = true
+        Update book in database
+        Display "Reservation successful."
+        Return true
+    Endif
+
+    Display "Reservation denied: book must already be borrowed by another member."
+    Return false
+End Function
+</pre>
+
+<hr>
+
+<h3>4.6 overdueReport(today)</h3>
+<pre>
+Function overdueReport(today)
+
+    Display "Overdue Books:"
+
+    For each book in books
+        If book.isOverdue(today)
+            Display book.id, book.title, book.borrowerId, book.dueDay
+        Endif
+    Endfor
+End Function
+</pre>
+
+<hr>
+
+<h3>4.7 addBook(book, librarian)</h3>
+<pre>
+Function addBook(book, librarian)
+
+    If a book with the same ID already exists
+        Display "Add denied: duplicate book ID."
+        Return false
+    Endif
+
+    Add book to books
+    Insert book into database
+
+    Display "Book added successfully."
+    Return true
+End Function
+</pre>
+
+<hr>
+
+<h3>4.8 removeBook(bookId, librarian)</h3>
+<pre>
+Function removeBook(bookId, librarian)
+
+    book &lt;- Find book in books where book.id = bookId
+
+    If book not found
+        Display "Remove denied: book not found."
+        Return false
+    Endif
+
+    If book.status = Borrowed OR book.status = Reserved
+        Display "Remove denied: book is borrowed or reserved."
+        Return false
+    Endif
+
+    Delete book from database
+    Remove book from books
+
+    Display "Book removed successfully."
+    Return true
+End Function
+</pre>
+
+<hr>
+
+<h3>4.9 setBorrowingLimit(limit, admin)</h3>
+<pre>
+Function setBorrowingLimit(limit, admin)
+
+    If limit &lt; 1 OR limit &gt; 20
+        Display "Invalid borrowing limit."
+        Return false
+    Endif
+
+    borrowingLimit &lt;- limit
+    Display "Borrowing limit updated."
+    Return true
+End Function
+</pre>
+
+<hr>
+
+<h3>4.10 setLatePenalty(penalty, admin)</h3>
+<pre>
+Function setLatePenalty(penalty, admin)
+
+    If penalty &lt; 0
+        Display "Invalid value."
+        Return false
+    Endif
+
+    latePenaltyPerDay &lt;- penalty
+    Display "Late penalty updated."
+    Return true
+End Function
+</pre>
+
+<hr>
+
+<h3>4.11 getBorrowedBooksForMember(memberId)</h3>
+<pre>
+Function getBorrowedBooksForMember(memberId)
+
+    borrowed &lt;- empty list
+
+    For each book in books
+        If book.borrowerId = memberId
+            Add book.id to borrowed
+        Endif
+    Endfor
+
+    Return borrowed
+End Function
+</pre>
+
+<hr>
+
+<h3>4.12 registerMember(userId, name, email, username, password)</h3>
+<pre>
+Function registerMember(userId, name, email, username, password)
+    Return database.registerMember(userId, name, email, username, password)
+End Function
+</pre>
+
+<hr>
+
+<h3>4.13 loginUser(username, password)</h3>
+<pre>
+Function loginUser(username, password)
+    Return database.loginUser(username, password)
+End Function
+</pre>
+
+<hr>
+
+<h2>5) Main Program</h2>
+
+<pre>
+Set today &lt;- 0
+Create Library "library"
+
+While true
+    Display main menu
+    Display "1. Login"
+    Display "0. Exit"
+
+    choice &lt;- Read input
+
+    If choice = 0
+        Stop program
+    Endif
+
+    If choice = 1
+        username &lt;- Read input
+        password &lt;- Read input
+
+        result &lt;- library.loginUser(username, password)
+
+        If login fails
+            Display "Login failed."
+            Continue
+        Endif
+
+        If role = Member
+            Create Member object
+
+            While logged in
+                Display Member menu
+                Read action
+
+                If action = list books
+                    Call library.listAllBooks(today)
+
+                Else if action = search by title
+                    Call library.searchByTitle(query)
+
+                Else if action = search by author
+                    Call library.searchByAuthor(query)
+
+                Else if action = borrow
+                    Call library.borrowBook(bookId, member, today)
+
+                Else if action = return
+                    Call library.returnBook(bookId, member, today)
+
+                Else if action = reserve
+                    Call library.reserveBook(bookId, member, today)
+
+                Else if action = view borrowed books
+                    Call library.getBorrowedBooksForMember(member.id)
+
+                Else if action = advance day
+                    today &lt;- today + 1
+
+                Else if action = logout
+                    Exit Member menu
+                Endif
+            Endwhile
+
+        Else if role = Librarian
+            Create Librarian object
+
+            While logged in
+                Display Librarian menu
+                Read action
+
+                If action = list books
+                    Call library.listAllBooks(today)
+
+                Else if action = add book
+                    Call library.addBook(newBook, librarian)
+
+                Else if action = remove book
+                    Call library.removeBook(bookId, librarian)
+
+                Else if action = overdue report
+                    Call library.overdueReport(today)
+
+                Else if action = create member account
+                    Read member details
+                    Call library.registerMember(userId, name, email, username, password)
+
+                Else if action = advance day
+                    today &lt;- today + 1
+
+                Else if action = logout
+                    Exit Librarian menu
+                Endif
+            Endwhile
+
+        Else if role = Admin
+            Create Admin object
+
+            While logged in
+                Display Admin menu
+                Read action
+
+                If action = set borrowing limit
+                    Call library.setBorrowingLimit(limit, admin)
+
+                Else if action = set late penalty
+                    Call library.setLatePenalty(penalty, admin)
+
+                Else if action = advance day
+                    today &lt;- today + 1
+
+                Else if action = logout
+                    Exit Admin menu
+                Endif
+            Endwhile
+        Endif
+    Endif
+Endwhile
+</pre>
