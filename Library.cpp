@@ -304,9 +304,9 @@ bool Library::setLatePenalty(double penalty, const Admin& admin)
     cout << "Late penalty updated to " << latePenaltyPerDay << ".\n";
     return true;
 }
-bool Library::registerMember(const string& userId, const string& name, const string& username, const string& password)
+bool Library::registerMember(const string& userId, const string& name, const string& email, const string& username, const string& password)
 {
-    return database.registerMember(userId, name, username, password);
+    return database.registerMember(userId, name, email, username, password);
 }
 
 bool Library::loginUser(const string& username, const string& password, string& role, string& userId, string& name)

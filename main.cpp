@@ -214,10 +214,11 @@ int main()
                     {
                         string memberId = readLine("Enter new Member ID: ");
                         string memberName = readLine("Enter Member Name: ");
+                        string memberEmail = readLine("Enter Member Email: ");
                         string newUsername = readLine("Enter Member Username: ");
                         string newPassword = readLine("Enter Member Password: ");
 
-                        if (library.registerMember(memberId, memberName, newUsername, newPassword))
+                        if (library.registerMember(memberId, memberName, memberEmail, newUsername, newPassword))
                             cout << "Member account created successfully.\n";
                         else
                             cout << "Failed to create member account.\n";

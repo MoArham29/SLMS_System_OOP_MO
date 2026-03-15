@@ -40,7 +40,7 @@ public:
 
     bool addBook(const Book& book, const Librarian& librarian);
     bool removeBook(const string& bookId, const Librarian& librarian);
-    bool registerMember(const string& userId, const string& name, const string& username, const string& password);
+    bool registerMember(const string& userId, const string& name, const string& email, const string& username, const string& password);
     bool loginUser(const string& username, const string& password, string& role, string& userId, string& name);
 
     void overdueReport(int today);

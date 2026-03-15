@@ -46,6 +46,7 @@ bool Database::createTables()
         "CREATE TABLE IF NOT EXISTS users ("
         "user_id TEXT PRIMARY KEY,"
         "name TEXT NOT NULL,"
+        "email TEXT NOT NULL,"
         "username TEXT UNIQUE NOT NULL,"
         "password TEXT NOT NULL,"
         "role TEXT NOT NULL"
@@ -261,7 +262,7 @@ bool Database::usernameExists(const string& username)
     return count > 0;
 }
 
-bool Database::registerMember(const string& userId, const string& name, const string& username, const string& password)
+bool Database::registerMember(const string& userId, const string& name, const string& email, const string& username, const string& password)
 {
     if (usernameExists(username))
     {
@@ -270,7 +271,7 @@ bool Database::registerMember(const string& userId, const string& name, const st
     }
 
     const char* sql =
-        "INSERT INTO users (user_id, name, username, password, role) "
+        "INSERT INTO users (user_id, name, email, username, password, role) "
         "VALUES (?, ?, ?, ?, 'Member');";
 
     sqlite3_stmt* stmt = nullptr;
@@ -280,8 +281,9 @@ bool Database::registerMember(const string& userId, const string& name, const st
 
     sqlite3_bind_text(stmt, 1, userId.c_str(), -1, SQLITE_TRANSIENT);
     sqlite3_bind_text(stmt, 2, name.c_str(), -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 3, username.c_str(), -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 4, password.c_str(), -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 3, email.c_str(), -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 4, username.c_str(), -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 5, password.c_str(), -1, SQLITE_TRANSIENT);
 
     bool success = (sqlite3_step(stmt) == SQLITE_DONE);
     sqlite3_finalize(stmt);
