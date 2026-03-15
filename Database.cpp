@@ -178,6 +178,143 @@ bool Database::deleteBook(const string& bookId)
     return success;
 }
 
+bool Database::createDefaultUsers()
+{
+    const char* checkSql = "SELECT COUNT(*) FROM users WHERE role = ?;";
+    const char* insertSql = "INSERT INTO users (user_id, name, username, password, role) VALUES (?, ?, ?, ?, ?);";
+
+    sqlite3_stmt* checkStmt = nullptr;
+    sqlite3_stmt* insertStmt = nullptr;
+
+    // Create default Admin if none exists
+    if (sqlite3_prepare_v2(db, checkSql, -1, &checkStmt, nullptr) != SQLITE_OK)
+        return false;
+
+    sqlite3_bind_text(checkStmt, 1, "Admin", -1, SQLITE_TRANSIENT);
+
+    int adminCount = 0;
+    if (sqlite3_step(checkStmt) == SQLITE_ROW)
+        adminCount = sqlite3_column_int(checkStmt, 0);
+
+    sqlite3_finalize(checkStmt);
+
+    if (adminCount == 0)
+    {
+        if (sqlite3_prepare_v2(db, insertSql, -1, &insertStmt, nullptr) != SQLITE_OK)
+            return false;
+
+        sqlite3_bind_text(insertStmt, 1, "A001", -1, SQLITE_TRANSIENT);
+        sqlite3_bind_text(insertStmt, 2, "System Admin", -1, SQLITE_TRANSIENT);
+        sqlite3_bind_text(insertStmt, 3, "admin", -1, SQLITE_TRANSIENT);
+        sqlite3_bind_text(insertStmt, 4, "admin123", -1, SQLITE_TRANSIENT);
+        sqlite3_bind_text(insertStmt, 5, "Admin", -1, SQLITE_TRANSIENT);
+
+        sqlite3_step(insertStmt);
+        sqlite3_finalize(insertStmt);
+    }
+
+    // Create default Librarian if none exists
+    if (sqlite3_prepare_v2(db, checkSql, -1, &checkStmt, nullptr) != SQLITE_OK)
+        return false;
+
+    sqlite3_bind_text(checkStmt, 1, "Librarian", -1, SQLITE_TRANSIENT);
+
+    int librarianCount = 0;
+    if (sqlite3_step(checkStmt) == SQLITE_ROW)
+        librarianCount = sqlite3_column_int(checkStmt, 0);
+
+    sqlite3_finalize(checkStmt);
+
+    if (librarianCount == 0)
+    {
+        if (sqlite3_prepare_v2(db, insertSql, -1, &insertStmt, nullptr) != SQLITE_OK)
+            return false;
+
+        sqlite3_bind_text(insertStmt, 1, "L001", -1, SQLITE_TRANSIENT);
+        sqlite3_bind_text(insertStmt, 2, "Main Librarian", -1, SQLITE_TRANSIENT);
+        sqlite3_bind_text(insertStmt, 3, "librarian", -1, SQLITE_TRANSIENT);
+        sqlite3_bind_text(insertStmt, 4, "lib123", -1, SQLITE_TRANSIENT);
+        sqlite3_bind_text(insertStmt, 5, "Librarian", -1, SQLITE_TRANSIENT);
+
+        sqlite3_step(insertStmt);
+        sqlite3_finalize(insertStmt);
+    }
+
+    return true;
+}
+
+bool Database::usernameExists(const string& username)
+{
+    const char* sql = "SELECT COUNT(*) FROM users WHERE username = ?;";
+    sqlite3_stmt* stmt = nullptr;
+
+    if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) != SQLITE_OK)
+        return false;
+
+    sqlite3_bind_text(stmt, 1, username.c_str(), -1, SQLITE_TRANSIENT);
+
+    int count = 0;
+    if (sqlite3_step(stmt) == SQLITE_ROW)
+        count = sqlite3_column_int(stmt, 0);
+
+    sqlite3_finalize(stmt);
+    return count > 0;
+}
+
+bool Database::registerMember(const string& userId, const string& name, const string& username, const string& password)
+{
+    if (usernameExists(username))
+    {
+        cerr << "Username already exists.\n";
+        return false;
+    }
+
+    const char* sql =
+        "INSERT INTO users (user_id, name, username, password, role) "
+        "VALUES (?, ?, ?, ?, 'Member');";
+
+    sqlite3_stmt* stmt = nullptr;
+
+    if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) != SQLITE_OK)
+        return false;
+
+    sqlite3_bind_text(stmt, 1, userId.c_str(), -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 2, name.c_str(), -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 3, username.c_str(), -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 4, password.c_str(), -1, SQLITE_TRANSIENT);
+
+    bool success = (sqlite3_step(stmt) == SQLITE_DONE);
+    sqlite3_finalize(stmt);
+    return success;
+}
+
+bool Database::loginUser(const string& username, const string& password, string& role, string& userId, string& name)
+{
+    const char* sql =
+        "SELECT user_id, name, role FROM users WHERE username = ? AND password = ?;";
+
+    sqlite3_stmt* stmt = nullptr;
+
+    if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) != SQLITE_OK)
+        return false;
+
+    sqlite3_bind_text(stmt, 1, username.c_str(), -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 2, password.c_str(), -1, SQLITE_TRANSIENT);
+
+    bool success = false;
+
+    if (sqlite3_step(stmt) == SQLITE_ROW)
+    {
+        userId = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0));
+        name = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
+        role = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
+        success = true;
+    }
+
+    sqlite3_finalize(stmt);
+    return success;
+}
+
 vector<Book> Database::loadBooks()
 {
     vector<Book> books;
