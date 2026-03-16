@@ -50,18 +50,48 @@ void Library::seedSampleData()
     Book b3("B003", "Design Patterns", "Erich Gamma");
     Book b4("B004", "C++ Primer", "Stanley Lippman");
     Book b5("B005", "Introduction to Algorithms", "Thomas Cormen");
+    Book b6("B006", "Effective C++", "Scott Meyers");
+    Book b7("B007", "Refactoring", "Martin Fowler");
+    Book b8("B008", "The Art of Computer Programming", "Donald Knuth");
+    Book b9("B009", "Head First Design Patterns", "Eric Freeman");
+    Book b10("B010", "Programming Pearls", "Jon Bentley");  
+    Book b11("B011", "Code Complete", "Steve McConnell");
+    Book b12("B012", "The C++ Programming Language", "Bjarne Stroustrup");
+    Book b13("B013", "Effective Modern C++", "Scott Meyers");
+    Book b14("B014", "Algorithms", "Robert Sedgewick");
+    Book b15("B015", "The Mythical Man-Month", "Frederick Brooks");
 
     books.push_back(b1);
     books.push_back(b2);
     books.push_back(b3);
     books.push_back(b4);
     books.push_back(b5);
+    books.push_back(b6);
+    books.push_back(b7);
+    books.push_back(b8);
+    books.push_back(b9);                
+    books.push_back(b10);
+    books.push_back(b11);
+    books.push_back(b12);
+    books.push_back(b13);
+    books.push_back(b14);
+    books.push_back(b15);
 
     database.insertBook(b1);
     database.insertBook(b2);
     database.insertBook(b3);
     database.insertBook(b4);
     database.insertBook(b5);
+    database.insertBook(b6);
+    database.insertBook(b7);
+    database.insertBook(b8);
+    database.insertBook(b9);
+    database.insertBook(b10);
+    database.insertBook(b11);
+    database.insertBook(b12);
+    database.insertBook(b13);
+    database.insertBook(b14);
+    database.insertBook(b15);
 }
 
 void Library::listAllBooks(int today)
