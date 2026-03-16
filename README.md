@@ -21,13 +21,13 @@ The system manages books, users, borrowing, reservations, and role-based access 
 
 ## Project Structure
 
-SLMS_System_OOP_MO
+###SLMS_System_OOP_MO
 
-main.cpp
+###main.cpp
 |
-Book.cpp / Book.h
+###Book.cpp / Book.h
 |
-Library.cpp / Library.h
+###Library.cpp / Library.h
 |
 Database.cpp / Database.h
 |
