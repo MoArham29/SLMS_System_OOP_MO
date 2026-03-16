@@ -22,30 +22,8 @@ The system manages books, users, borrowing, reservations, and role-based access 
 ## Project Structure
 
 ###SLMS_System_OOP_MO
+<img width="400" height="318" alt="Screenshot 2026-03-16 at 1 25 08 pm" src="https://github.com/user-attachments/assets/fe23283c-779f-4bff-8da3-9b9879e71492" />
 
-###main.cpp
-|
-###Book.cpp / Book.h
-|
-###Library.cpp / Library.h
-|
-Database.cpp / Database.h
-|
-User.h
-|
-Member.h
-|
-Librarian.h
-|
-Admin.h
-|
-sqlite3.c
-|
-slms.db
-|
-UML diagrams
-|
-Wiki documentation
 
 ## How to Run
 
