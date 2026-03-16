@@ -22,39 +22,49 @@ The system manages books, users, borrowing, reservations, and role-based access 
 ## Project Structure
 
 SLMS_System_OOP_MO
-│
-├── main.cpp
-├── Book.cpp / Book.h
-├── Library.cpp / Library.h
-├── Database.cpp / Database.h
-├── User.h
-├── Member.h
-├── Librarian.h
-├── Admin.h
-├── sqlite3.c
-├── slms.db
-│
-├── UML diagrams
-└── Wiki documentation
+
+main.cpp
+|
+Book.cpp / Book.h
+|
+Library.cpp / Library.h
+|
+Database.cpp / Database.h
+|
+User.h
+|
+Member.h
+|
+Librarian.h
+|
+Admin.h
+|
+sqlite3.c
+|
+slms.db
+|
+UML diagrams
+|
+Wiki documentation
 
 ## How to Run
 
-**clang -c sqlite3.c -o sqlite3.o
+clang -c sqlite3.c -o sqlite3.o
 
 clang++ -std=c++17 main.cpp Book.cpp Library.cpp Database.cpp sqlite3.o -o slms
 
-./slms**
+./slms
 
 ## Demo Accounts
 
-**Admin
+Admin
 username: admin
 password: admin123
 
 Librarian
 username: librarian
 password: lib123
-**
+
 
 
 
