@@ -27,11 +27,17 @@ The system manages books, users, borrowing, reservations, and role-based access 
 
 ## How to Run
 
+Please Use Visual Studio Code and make sure Clang ++ is installed 
+
+In Terminal Type 
+
 clang -c sqlite3.c -o sqlite3.o
 
 clang++ -std=c++17 main.cpp Book.cpp Library.cpp Database.cpp sqlite3.o -o slms
 
 ./slms
+
+After these three steps the system will start running 
 
 ## Demo Accounts
 
